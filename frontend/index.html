@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sift — Resume Screening Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="desk">
+
+  <header class="masthead">
+    <div class="masthead-mark">
+      <span class="mark-glyph">✂</span>
+      <div>
+        <h1>Sift</h1>
+        <p class="tagline">a screening desk for resumes</p>
+      </div>
+    </div>
+    <div class="masthead-meta">
+      <span id="job-count">0</span> requisitions on file
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- LEFT: intake -->
+    <section class="folder intake" aria-label="Set up a requisition and upload resumes">
+
+      <div class="folder-tab">01 · Requisition</div>
+      <form id="job-form" class="stack">
+        <label class="field">
+          <span>Role title</span>
+          <input type="text" id="job-title" placeholder="e.g. Senior Backend Engineer" required />
+        </label>
+        <label class="field">
+          <span>Job description</span>
+          <textarea id="job-description" rows="8" placeholder="Paste the full job description here — required skills, years of experience, responsibilities…" required></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Open requisition</button>
+      </form>
+
+      <div id="job-picker-wrap" class="field" style="display:none;">
+        <span>Active requisition</span>
+        <select id="job-picker"></select>
+      </div>
+
+      <div class="folder-tab" style="margin-top: 28px;">02 · Candidates</div>
+      <form id="upload-form" class="stack">
+        <label class="dropzone" id="dropzone" for="resume-input">
+          <span class="dropzone-icon">＋</span>
+          <span class="dropzone-text">Drop resumes here or click to browse</span>
+          <span class="dropzone-hint">PDF · DOCX · TXT — multiple files allowed</span>
+          <input type="file" id="resume-input" multiple accept=".pdf,.docx,.txt" hidden />
+        </label>
+        <ul id="file-list" class="file-list"></ul>
+        <button type="submit" class="btn btn-primary" id="upload-btn" disabled>Screen candidates</button>
+      </form>
+
+      <div id="status-line" class="status-line" role="status" aria-live="polite"></div>
+    </section>
+
+    <!-- RIGHT: results -->
+    <section class="results" aria-label="Shortlisted candidates">
+      <div class="results-header">
+        <h2 id="results-title">No requisition open yet</h2>
+        <p id="results-sub" class="muted">Open a requisition on the left to begin screening resumes.</p>
+      </div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-stamp">EMPTY&nbsp;FILE</div>
+        <p>Once you upload resumes, ranked candidate dossiers will appear here — best fit first.</p>
+      </div>
+
+      <ol id="candidate-list" class="candidate-list"></ol>
+    </section>
+
+  </main>
+</div>
+
+<template id="candidate-card-template">
+  <li class="dossier">
+    <div class="dossier-stamp">
+      <svg viewBox="0 0 120 120" class="stamp-ring" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" />
+      </svg>
+      <span class="stamp-score"></span>
+      <span class="stamp-label">/ 10</span>
+    </div>
+    <div class="dossier-body">
+      <div class="dossier-heading">
+        <h3 class="dossier-name"></h3>
+        <span class="dossier-file muted"></span>
+      </div>
+      <p class="dossier-justification"></p>
+      <div class="dossier-columns">
+        <div>
+          <h4>Skills</h4>
+          <ul class="dossier-skills"></ul>
+        </div>
+        <div>
+          <h4>Experience</h4>
+          <p class="dossier-experience"></p>
+        </div>
+        <div>
+          <h4>Education</h4>
+          <p class="dossier-education"></p>
+        </div>
+      </div>
+    </div>
+    <button class="dossier-remove" title="Remove candidate" aria-label="Remove candidate">✕</button>
+  </li>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>

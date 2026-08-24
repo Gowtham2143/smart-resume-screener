@@ -1,0 +1,429 @@
+/* ---------------------------------------------------------------------
+   Sift — resume screening desk
+   Design concept: a recruiter's paper desk. Manila-folder intake panel
+   on the left, ranked "dossier" index cards on the right, each stamped
+   with its match score like an ink review stamp.
+--------------------------------------------------------------------- */
+
+:root {
+  --paper:        #efe9da;
+  --paper-raised: #f7f3e8;
+  --paper-line:   #cabf9f;
+  --ink:          #232c33;
+  --ink-soft:     #5c6a72;
+  --ink-faint:    #8a9298;
+  --stamp-red:    #a13d2c;
+  --stamp-amber:  #a9761f;
+  --stamp-green:  #3c6b52;
+  --shadow:       0 1px 0 rgba(35,44,51,0.05), 0 8px 20px -12px rgba(35,44,51,0.35);
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  background-image:
+    radial-gradient(rgba(35,44,51,0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--stamp-red);
+  outline-offset: 2px;
+}
+
+.desk {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 80px;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 14px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.masthead-mark { display: flex; align-items: center; gap: 12px; }
+
+.mark-glyph {
+  font-size: 30px;
+  transform: rotate(-8deg);
+  display: inline-block;
+}
+
+.masthead h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 34px;
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1;
+}
+
+.tagline {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-family: var(--font-display);
+}
+
+.masthead-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+.masthead-meta span { color: var(--ink); font-weight: 600; }
+
+/* ---------- layout ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+.muted { color: var(--ink-soft); }
+
+/* ---------- intake folder ---------- */
+
+.folder {
+  background: var(--paper-raised);
+  border: 1px solid var(--paper-line);
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+  padding: 20px 20px 22px;
+}
+
+.folder-tab {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 1px dashed var(--paper-line);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+
+.stack { display: flex; flex-direction: column; gap: 12px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.field > span { font-weight: 600; color: var(--ink); }
+
+input[type="text"],
+textarea,
+select {
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 11px;
+  border: 1px solid var(--paper-line);
+  border-radius: 2px;
+  background: #fffdf7;
+  color: var(--ink);
+  resize: vertical;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--ink);
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 11px 16px;
+  border-radius: 2px;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: transform 0.06s ease, background 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper-raised);
+}
+.btn-primary:hover:not(:disabled) { background: #34424c; }
+.btn-primary:active:not(:disabled) { transform: translateY(1px); }
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* dropzone */
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  border: 1.5px dashed var(--paper-line);
+  border-radius: 3px;
+  padding: 22px 12px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  background: repeating-linear-gradient(
+    135deg, rgba(35,44,51,0.02) 0 8px, transparent 8px 16px
+  );
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.dropzone:hover, .dropzone.drag-over {
+  border-color: var(--stamp-red);
+  color: var(--ink);
+}
+.dropzone-icon { font-size: 20px; color: var(--stamp-red); }
+.dropzone-text { font-size: 13.5px; font-weight: 600; }
+.dropzone-hint { font-family: var(--font-mono); font-size: 10.5px; }
+
+.file-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.file-list li {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 8px;
+  background: #fffdf7;
+  border: 1px solid var(--paper-line);
+  border-radius: 2px;
+}
+.file-list li span.remove {
+  cursor: pointer;
+  color: var(--stamp-red);
+  font-weight: 700;
+}
+
+.status-line {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  min-height: 16px;
+  white-space: pre-wrap;
+}
+.status-line.error { color: var(--stamp-red); }
+.status-line.success { color: var(--stamp-green); }
+
+/* ---------- results ---------- */
+
+.results-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.results-header h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  margin: 0;
+}
+
+.results-header p { margin: 0; font-size: 13px; }
+
+.empty-state {
+  border: 1.5px dashed var(--paper-line);
+  border-radius: 3px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.empty-stamp {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  border: 2px solid var(--ink-faint);
+  color: var(--ink-faint);
+  padding: 6px 14px;
+  border-radius: 3px;
+  transform: rotate(-4deg);
+  margin-bottom: 10px;
+}
+
+.candidate-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* dossier card */
+
+.dossier {
+  position: relative;
+  display: grid;
+  grid-template-columns: 78px 1fr auto;
+  gap: 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--paper-line);
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  animation: settle 0.25s ease;
+}
+
+@keyframes settle {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 560px) {
+  .dossier { grid-template-columns: 1fr; }
+}
+
+.dossier-stamp {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-6deg);
+  color: var(--score-color, var(--stamp-amber));
+}
+
+.stamp-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.stamp-ring circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.5;
+  opacity: 0.9;
+}
+
+.stamp-score {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1;
+}
+.stamp-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+}
+
+.dossier-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dossier-name {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.dossier-file {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.dossier-justification {
+  margin: 8px 0 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  border-left: 2px solid var(--paper-line);
+  padding-left: 10px;
+}
+
+.dossier-columns {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 700px) {
+  .dossier-columns { grid-template-columns: 1fr; }
+}
+
+.dossier-columns h4 {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+}
+
+.dossier-skills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.dossier-skills li {
+  font-size: 11.5px;
+  background: #fffdf7;
+  border: 1px solid var(--paper-line);
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.dossier-experience, .dossier-education {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.dossier-remove {
+  align-self: start;
+  background: none;
+  border: none;
+  color: var(--ink-faint);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+}
+.dossier-remove:hover { color: var(--stamp-red); }
